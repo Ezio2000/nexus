@@ -1,0 +1,14 @@
+一、命名规范
+1. Throwable简称t
+2. Exception简称e
+3. 不可以用中文
+4. 句子要大写字母开头，句号结尾
+5. 注释用英文
+6. 自己类的属性和方法要加this
+7. 请求req，响应resp
+8. 类启动为start()，线程启动为run()
+9. []是s,list这种要加xxList
+10. 能只用固定值初始化的，在属性时就要初始化
+11. req和resp，如果是单一值，则可以直接传，否则需要封装
+12. 泛型如果有多个字母，用驼峰
+13. nettyServer和nettyClient只可以使用commandManager里的命令
