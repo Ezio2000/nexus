@@ -16,8 +16,13 @@ import java.util.List;
 @WebProtocol(nexus = @Nexus(name = "exampleWebProtocolProxy"))
 public class ExampleWebProtocolProxy {
 
-    @WebProtocol.Client(uri = "/example")
+    @WebProtocol.Server(uri = "/example")
     public ExampleResp serverReceive(ExampleReq exampleReq) {
+        log.info(
+                "收到请求: {}, {}",
+                exampleReq.reqCode,
+                exampleReq.str
+        );
         ExampleResp exampleResp = new ExampleResp();
         exampleResp.respCode = exampleReq.reqCode + 1;
         exampleResp.str = exampleReq.str;
@@ -25,10 +30,10 @@ public class ExampleWebProtocolProxy {
         return exampleResp;
     }
 
-    @WebProtocol.Server(uri = "/example")
+    @WebProtocol.Client(uri = "/example")
     public ExampleResp clientReceive(ExampleResp exampleResp) {
         log.info(
-                "收到请求: {}, {}, {}",
+                "收到响应: {}, {}, {}",
                 exampleResp.respCode,
                 exampleResp.str,
                 exampleResp.lists

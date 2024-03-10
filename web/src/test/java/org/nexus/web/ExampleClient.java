@@ -1,6 +1,7 @@
 package org.nexus.web;
 
-import org.nexus.common.pack.PackageScanner;
+import org.nexus.common.util.PackageScannerUtil;
+import org.nexus.common.util.PropertiesUtil;
 import org.nexus.web.anno.WebProtocol;
 import org.nexus.web.client.NettyClient;
 import org.nexus.web.manager.NexusProxyManager;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Xieningjun
@@ -22,7 +24,7 @@ public class ExampleClient {
     private static final NexusProxyManager nexusProxyManager = NexusProxyManager.getInstance();
 
     public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        List<Class<?>> clazzList = PackageScanner.scan("org.nexus.web");
+        List<Class<?>> clazzList = PackageScannerUtil.scan("org.nexus.web");
         for (Class<?> clazz : clazzList) {
             WebProtocol annotation = clazz.getAnnotation(WebProtocol.class);
             if (annotation != null) {
@@ -45,8 +47,14 @@ public class ExampleClient {
                 }
             }
         }
-        NettyClient nettyClient = new NettyClient("localhost", 8002);
+        /* 从配置文件中读取数据 */
+        Properties properties = PropertiesUtil.getProperties("nexus.properties");
+        String host = (String) properties.get("netty.client.host");
+        int port = Integer.parseInt((String) properties.get("netty.client.port"));
+        /* 启动netty客户端 */
+        NettyClient nettyClient = new NettyClient(host, port);
         nettyClient.start();
+        /* 发送请求 */
         ExampleWebProtocolProxy.ExampleReq req = new ExampleWebProtocolProxy.ExampleReq();
         req.reqCode = 1;
         req.str = "慧芳很好看";

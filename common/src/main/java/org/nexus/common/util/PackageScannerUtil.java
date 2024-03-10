@@ -1,4 +1,4 @@
-package org.nexus.common.pack;
+package org.nexus.common.util;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * @description 包扫描
  */
 @Slf4j
-public class PackageScanner {
+public class PackageScannerUtil {
 
     public static List<Class<?>> scan(String packageName) throws ClassNotFoundException, IOException {
         List<Class<?>> scanList = new ArrayList<>();
@@ -47,7 +47,7 @@ public class PackageScanner {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        PackageScanner.scan("org.nexus.server.client");
+        PackageScannerUtil.scan("org.nexus.server.client");
     }
 
 }
