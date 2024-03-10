@@ -15,6 +15,7 @@ import org.nexus.web.handler.WebHandlerImpl;
  * @date 2024/2/27 10:54
  * @description Netty客户端处理器
  */
+// TODO: 2024/3/11 超时和异常时主动关闭连接
 @Slf4j
 public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
@@ -24,11 +25,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof FullHttpResponse) {
-            FullHttpResponse resp = (FullHttpResponse) msg;
+        if (msg instanceof FullHttpResponse resp) {
             Object handledResp = null;
             try {
-
                 // TODO: 2024/3/9
                 handledResp = respHandler.handle(resp);
             } catch (Throwable t) {
@@ -41,6 +40,12 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
                 ctx.close();
             }
         }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        // 连接关闭时打印日志
+        log.warn("Connection closed.");
     }
 
     @Override

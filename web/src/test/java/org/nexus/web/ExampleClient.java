@@ -59,6 +59,7 @@ public class ExampleClient {
         req.reqCode = 1;
         req.str = "慧芳很好看";
         nettyClient.async("/example", null, req);
+        nettyClient.async("/error", null, req);
         ExampleWebProtocolProxy.ExampleResp resp = nettyClient.sync("/example", null, req);
         System.out.println(resp.respCode);
         System.out.println(resp.str);
