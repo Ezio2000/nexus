@@ -33,8 +33,7 @@ public class ExampleClient {
                         NexusProxy nexusProxy = nexusProxyManager.containsKey(annotation.nexus().name())
                                 ? nexusProxyManager.get(annotation.nexus().name())
                                 : new WebProtocolProxy();
-                        if (nexusProxy instanceof WebProtocolProxy) {
-                            WebProtocolProxy webProtocolProxy = (WebProtocolProxy) nexusProxy;
+                        if (nexusProxy instanceof WebProtocolProxy webProtocolProxy) {
                             webProtocolProxy.setName(annotation.nexus().name());
                             webProtocolProxy.setClazz(clazz);
                             webProtocolProxy.setInstance(instance);
