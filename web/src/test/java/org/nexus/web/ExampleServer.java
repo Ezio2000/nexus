@@ -32,16 +32,16 @@ public class ExampleServer {
                 for (Method method : clazz.getMethods()) {
                     WebProtocol.Server server = method.getAnnotation(WebProtocol.Server.class);
                     if (server != null && server.role() == WebProtocol.Role.SERVER) {
-                        NexusProxy nexusProxy = nexusProxyManager.containsKey(annotation.nexus().name())
-                                ? nexusProxyManager.get(annotation.nexus().name())
+                        NexusProxy nexusProxy = nexusProxyManager.containsKey(annotation.name())
+                                ? nexusProxyManager.get(annotation.name())
                                 : new WebProtocolProxy();
                         if (nexusProxy instanceof WebProtocolProxy webProtocolProxy) {
-                            webProtocolProxy.setName(annotation.nexus().name());
+                            webProtocolProxy.setName(annotation.name());
                             webProtocolProxy.setClazz(clazz);
                             webProtocolProxy.setInstance(instance);
                             webProtocolProxy.setUri(server.uri());
                             webProtocolProxy.setReqHandler(method);
-                            nexusProxyManager.put(annotation.nexus().name(), webProtocolProxy);
+                            nexusProxyManager.put(annotation.name(), webProtocolProxy);
                         }
                     }
                 }

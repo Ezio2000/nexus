@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WebProtocol {
 
-    Nexus nexus();
+    String name();
 
     enum Role {
         SERVER, CLIENT

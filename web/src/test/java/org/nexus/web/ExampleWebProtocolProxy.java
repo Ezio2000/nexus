@@ -1,7 +1,6 @@
 package org.nexus.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nexus.web.anno.Nexus;
 import org.nexus.web.anno.WebProtocol;
 
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import java.util.List;
  * @description
  */
 @Slf4j
-@WebProtocol(nexus = @Nexus(name = "exampleWebProtocolProxy"))
+@WebProtocol(name = "exampleWebProtocolProxy")
 public class ExampleWebProtocolProxy {
 
     @WebProtocol.Server(uri = "/example")
