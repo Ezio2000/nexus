@@ -31,7 +31,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 resp.headers().set("trace", trace);
 
                 // TODO: 2024/3/9
-                Object respBody = reqHandler.handle(req);
+                Object respBody = this.reqHandler.handle(req);
 
                 if (respBody != null) {
                     String bodyJson = Transformer.object2Json(respBody);

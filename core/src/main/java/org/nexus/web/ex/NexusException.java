@@ -1,7 +1,7 @@
-package org.nexus.common.ex;
+package org.nexus.web.ex;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nexus.common.abs.Disposal;
+import org.nexus.web.anno.Disposal;
 
 /**
  * @author Xieningjun
@@ -21,7 +21,7 @@ public class NexusException extends Exception implements Disposal {
 
     @Override
     public void dispose() {
-        Throwable t = getCause() == null ? this : getCause();
+        Throwable t = super.getCause() == null ? this : super.getCause();
         log.error("Dispose nexus exception.", t);
     }
 

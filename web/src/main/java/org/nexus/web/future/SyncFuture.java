@@ -20,13 +20,13 @@ public class SyncFuture<T> extends Future<T> {
 
     @Override
     public void await() throws InterruptedException {
-        latch.await();
+        this.latch.await();
     }
 
     @Override
     public void finish(T resp) {
         super.setResp(resp);
-        latch.countDown();
+        this.latch.countDown();
     }
 
 }

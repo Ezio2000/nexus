@@ -1,4 +1,4 @@
-package org.nexus.common.ex;
+package org.nexus.web.ex;
 
 /**
  * @author Xieningjun

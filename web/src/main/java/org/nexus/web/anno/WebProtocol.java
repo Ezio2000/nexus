@@ -13,19 +13,19 @@ public @interface WebProtocol {
 
     String name();
 
+    String uri();
+
     enum Role {
         SERVER, CLIENT
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface Client {
-        String uri();
         Role role() default Role.CLIENT;
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface Server {
-        String uri();
         Role role() default Role.SERVER;
     }
 

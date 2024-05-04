@@ -1,10 +1,11 @@
 package org.nexus.web;
 
-import org.nexus.common.util.PackageScannerUtil;
-import org.nexus.common.util.PropertiesUtil;
+import org.nexus.web.factory.SingletonFactory;
+import org.nexus.web.util.PackageScannerUtil;
+import org.nexus.web.util.PropertiesUtil;
 import org.nexus.web.anno.WebProtocol;
 import org.nexus.web.client.NettyClient;
-import org.nexus.web.manager.NexusProxyManager;
+import org.nexus.web.manager.WebNexusProxyManager;
 import org.nexus.web.pojo.NexusProxy;
 import org.nexus.web.pojo.WebProtocolProxy;
 
@@ -21,32 +22,12 @@ import java.util.Properties;
  */
 public class ExampleClient {
 
-    private static final NexusProxyManager nexusProxyManager = NexusProxyManager.getInstance();
+    private static final WebNexusProxyManager WEB_NEXUS_PROXY_MANAGER = SingletonFactory.factory().generate(
+            WebNexusProxyManager.class, WebNexusProxyManager::new
+    );
 
-    public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
-        List<Class<?>> clazzList = PackageScannerUtil.scan("org.nexus.web");
-        for (Class<?> clazz : clazzList) {
-            WebProtocol annotation = clazz.getAnnotation(WebProtocol.class);
-            if (annotation != null) {
-                Object instance = clazz.getConstructor().newInstance();
-                for (Method method : clazz.getMethods()) {
-                    WebProtocol.Client client = method.getAnnotation(WebProtocol.Client.class);
-                    if (client != null && client.role() == WebProtocol.Role.CLIENT) {
-                        NexusProxy nexusProxy = nexusProxyManager.containsKey(annotation.name())
-                                ? nexusProxyManager.get(annotation.name())
-                                : new WebProtocolProxy();
-                        if (nexusProxy instanceof WebProtocolProxy webProtocolProxy) {
-                            webProtocolProxy.setName(annotation.name());
-                            webProtocolProxy.setClazz(clazz);
-                            webProtocolProxy.setInstance(instance);
-                            webProtocolProxy.setUri(client.uri());
-                            webProtocolProxy.setRespHandler(method);
-                            nexusProxyManager.put(annotation.name(), webProtocolProxy);
-                        }
-                    }
-                }
-            }
-        }
+    public static void main(String[] args) throws Exception {
+        WebNexusProxyLoader.loadWebNexusProxy();
         /* 从配置文件中读取数据 */
         Properties properties = PropertiesUtil.getProperties("nexus.properties");
         String host = (String) properties.get("netty.client.host");
@@ -57,7 +38,7 @@ public class ExampleClient {
         /* 发送请求 */
         ExampleWebProtocolProxy.ExampleReq req = new ExampleWebProtocolProxy.ExampleReq();
         req.reqCode = 1;
-        req.str = "慧芳很好看";
+        req.str = "我讨厌慧芳";
         nettyClient.async("/example", null, req);
         nettyClient.async("/error", null, req);
         ExampleWebProtocolProxy.ExampleResp resp = nettyClient.sync("/example", null, req);

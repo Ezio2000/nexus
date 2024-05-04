@@ -6,6 +6,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.nexus.web.factory.SingletonFactory;
 import org.nexus.web.handler.RespHandler;
 import org.nexus.web.future.FutureManager;
 import org.nexus.web.handler.WebHandlerImpl;
@@ -21,7 +22,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     private final RespHandler respHandler = new WebHandlerImpl();
 
-    private final FutureManager futureManager = FutureManager.getInstance();
+    private final FutureManager futureManager = SingletonFactory.factory().generate(
+            FutureManager.class, FutureManager::new
+    );
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -29,7 +32,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             Object handledResp = null;
             try {
                 // TODO: 2024/3/9
-                handledResp = respHandler.handle(resp);
+                handledResp = this.respHandler.handle(resp);
             } catch (Throwable t) {
                 log.error("", t);
                 throw new RuntimeException(t);

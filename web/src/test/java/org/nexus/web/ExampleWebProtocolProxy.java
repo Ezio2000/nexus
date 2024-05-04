@@ -12,10 +12,10 @@ import java.util.List;
  * @description
  */
 @Slf4j
-@WebProtocol(name = "exampleWebProtocolProxy")
+@WebProtocol(name = "exampleWebProtocolProxy", uri = "/example")
 public class ExampleWebProtocolProxy {
 
-    @WebProtocol.Server(uri = "/example")
+    @WebProtocol.Server
     public ExampleResp serverReceive(ExampleReq exampleReq) {
         log.info(
                 "收到请求: {}, {}",
@@ -29,7 +29,7 @@ public class ExampleWebProtocolProxy {
         return exampleResp;
     }
 
-    @WebProtocol.Client(uri = "/example")
+    @WebProtocol.Client
     public ExampleResp clientReceive(ExampleResp exampleResp) {
         log.info(
                 "收到响应: {}, {}, {}",

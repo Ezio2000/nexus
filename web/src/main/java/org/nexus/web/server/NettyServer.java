@@ -51,8 +51,8 @@ public class NettyServer {
     }
 
     public void shutdown() {
-        workerGroup.shutdownGracefully();
-        bossGroup.shutdownGracefully();
+        this.workerGroup.shutdownGracefully();
+        this.bossGroup.shutdownGracefully();
     }
 
 }

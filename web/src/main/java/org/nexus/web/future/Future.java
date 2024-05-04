@@ -19,7 +19,7 @@ public abstract class Future<T> {
     public abstract void finish(T resp);
 
     public boolean finished() {
-        return resp != null;
+        return this.resp != null;
     }
 
 }

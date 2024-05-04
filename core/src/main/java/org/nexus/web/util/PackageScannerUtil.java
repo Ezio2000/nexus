@@ -1,4 +1,4 @@
-package org.nexus.common.util;
+package org.nexus.web.util;
 
 import lombok.extern.slf4j.Slf4j;
 

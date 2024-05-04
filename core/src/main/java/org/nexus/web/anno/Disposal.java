@@ -1,4 +1,4 @@
-package org.nexus.common.abs;
+package org.nexus.web.anno;
 
 /**
  * @author Xieningjun

@@ -32,7 +32,7 @@ public class WebProtocolProxy extends NexusProxy {
         for (Class<?> clazz : this.reqHandler.getParameterTypes()) {
             args.add(Transformer.json2Object(req, clazz));
         }
-        return super.invoke(reqHandler, args.toArray());
+        return super.invoke(this.reqHandler, args.toArray());
     }
 
     public Object handleResp(FullHttpResponse resp) throws Throwable {
@@ -40,7 +40,7 @@ public class WebProtocolProxy extends NexusProxy {
         for (Class<?> clazz : this.respHandler.getParameterTypes()) {
             args.add(Transformer.json2Object(resp, clazz));
         }
-        return super.invoke(respHandler, args.toArray());
+        return super.invoke(this.respHandler, args.toArray());
     }
 
 }

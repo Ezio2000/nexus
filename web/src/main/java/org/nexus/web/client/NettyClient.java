@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
+import org.nexus.web.factory.SingletonFactory;
 import org.nexus.web.future.AsyncFuture;
 import org.nexus.web.future.Future;
 import org.nexus.web.future.SyncFuture;
@@ -29,7 +30,9 @@ public class NettyClient {
 
     private final Bootstrap bootstrap;
 
-    private final FutureManager futureManager = FutureManager.getInstance();
+    private final FutureManager futureManager = SingletonFactory.factory().generate(
+            FutureManager.class, FutureManager::new
+    );
 
     public NettyClient(String host, int port) {
         this.host = host;
@@ -57,12 +60,12 @@ public class NettyClient {
     }
 
     public <T> void async(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
-        Future<T> future = futureManager.create(AsyncFuture.class);
+        Future<T> future = this.futureManager.create(AsyncFuture.class);
         this.request(path, header, reqBody, future.getTrace());
     }
 
     public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
-        Future<T> future = futureManager.create(SyncFuture.class);
+        Future<T> future = this.futureManager.create(SyncFuture.class);
         this.request(path, header, reqBody, future.getTrace());
         future.await();
         return future.getResp();
