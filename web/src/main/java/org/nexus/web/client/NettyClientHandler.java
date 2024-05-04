@@ -49,6 +49,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         // 连接关闭时打印日志
         log.warn("Connection closed.");
+        // todo connection closed后不关闭
+        // todo 通过线程变量获取trace？
+        ctx.fireChannelInactive();
     }
 
     @Override

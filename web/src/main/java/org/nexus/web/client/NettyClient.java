@@ -60,11 +60,13 @@ public class NettyClient {
     }
 
     public <T> void async(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
+        // todo 检查reqBody是否为resp的类型？或者页不需要？
         Future<T> future = this.futureManager.create(AsyncFuture.class);
         this.request(path, header, reqBody, future.getTrace());
     }
 
     public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
+        // todo 检查reqBody是否为resp的类型？或者页不需要？
         Future<T> future = this.futureManager.create(SyncFuture.class);
         this.request(path, header, reqBody, future.getTrace());
         future.await();
@@ -72,6 +74,7 @@ public class NettyClient {
     }
 
     private void request(String path, HttpHeaders header, Object reqBody, String trace) throws InterruptedException {
+        // 加请求参数校验，加在哪比较好？
         ChannelFuture future = this.bootstrap.connect(this.host, this.port).sync();
         DefaultFullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, path);
         req.headers().set(HttpHeaderNames.HOST, this.host);
