@@ -3,6 +3,7 @@ package org.nexus.valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,6 +19,12 @@ public class ValidController {
     @PostMapping("/valid")
     public void valid(@RequestBody ValidReq validReq) {
         validComponent.valid(validReq);
+    }
+
+    @RequestMapping("/health")
+    public boolean health() {
+        System.out.println("I am healthy!");
+        return true;
     }
 
 }

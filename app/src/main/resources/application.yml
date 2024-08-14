@@ -13,3 +13,6 @@ management:
     export:
       prometheus:
         enabled: true
+spring:
+  profiles:
+    include: mysql

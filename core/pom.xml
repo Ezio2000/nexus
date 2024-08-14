@@ -4,22 +4,21 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.nexus</groupId>
-    <artifactId>nexus</artifactId>
+    <artifactId>core</artifactId>
     <version>1.0.0</version>
-
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>base</module>
-        <module>web</module>
-        <module>app</module>
-        <module>core</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<!--        <maven.compiler.target>21</maven.compiler.target>-->
-<!--        <maven.compiler.source>21</maven.compiler.source>-->
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.nexus</groupId>
+            <artifactId>web</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
