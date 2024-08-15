@@ -1,6 +1,7 @@
 package org.nexus.core.life;
 
 import org.nexus.core.life.ex.LifecycleException;
+import org.nexus.core.life.resour.Releaser;
 
 /**
  * @author Xieningjun
@@ -9,51 +10,48 @@ import org.nexus.core.life.ex.LifecycleException;
  */
 public abstract class DeviceLifecycle implements Lifecycle {
     
-    protected final DeviceLifecycleContext context;
+    protected final LifecycleContext context;
     
-    public DeviceLifecycle(DeviceLifecycleContext context) {
+    public DeviceLifecycle(LifecycleContext context) {
         this.context = context;
     }
 
+    @Override
     public void bootstrap() {
         try {
             bootstrap0();
-        } catch (LifecycleException ex) {
-            context.setState(ex.state);
+        } catch (LifecycleException e) {
+            context.setState(e.state);
         }
         context.renewCur();
     }
 
+    @Override
     public void connect() {
         try {
             connect0();
-        } catch (LifecycleException ex) {
-            context.setState(ex.state);
+        } catch (LifecycleException e) {
+            context.setState(e.state);
         }
         context.renewCur();
     }
 
-    public void active() {
-        try {
-            active0();
-        } catch (LifecycleException ex) {
-            context.setState(ex.state);
-        }
-        context.renewCur();
-    }
-
+    @Override
     public void disconnect() {
         try {
             disconnect0();
-        } catch (LifecycleException ex) {
-            context.setState(ex.state);
+        } catch (LifecycleException e) {
+            context.setState(e.state);
         }
         context.renewCur();
     }
 
+    @Override
     public void destroy() {
         destroy0();
+        context.setState(LifecycleEnum.STATE.DESTROYED);
         context.renewCur();
+        context.release();
     }
 
     /**
@@ -62,8 +60,6 @@ public abstract class DeviceLifecycle implements Lifecycle {
     public void bootstrap0() throws LifecycleException {}
 
     public void connect0() throws LifecycleException {}
-
-    public void active0() throws LifecycleException {}
 
     public void disconnect0() throws LifecycleException {}
 

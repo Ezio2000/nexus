@@ -3,6 +3,7 @@ package org.nexus.core.life;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.nexus.core.life.cycle.*;
+import org.nexus.core.life.resour.Releaser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class DeviceLifecycleContext implements LifecycleContext {
 
     protected Lifecycle waited = new DeviceWaited(this);
 
-    protected Lifecycle destroyed = new DeviceDestroyed(this);
+    protected Lifecycle released = new DeviceReleased(this);
 
     protected Lifecycle cur = initial;
 
@@ -42,7 +43,7 @@ public class DeviceLifecycleContext implements LifecycleContext {
         { put(LifecycleEnum.STATE.PRE_CONNECTED, preConnected); }
         { put(LifecycleEnum.STATE.ACTIVE, active); }
         { put(LifecycleEnum.STATE.WAITED, waited); }
-        { put(LifecycleEnum.STATE.DESTROYED, destroyed); }
+        { put(LifecycleEnum.STATE.DESTROYED, released); }
     };
     // ------
 
@@ -56,16 +57,30 @@ public class DeviceLifecycleContext implements LifecycleContext {
     protected ScheduledExecutorService probeExecutor = Executors.newScheduledThreadPool(1);
     // ------
 
+    @Override
     public void renewCur() {
         cur = lifeCycles.get(state);
     }
 
+    @Override
     public void addRepo(Object key, Object value) {
         repos.put(key, value);
     }
 
+    @Override
     public Object getRepo(Object key) {
         return repos.get(key);
+    }
+
+    @Override
+    public void release() {
+        contactor.shutdown();
+        probeExecutor.shutdown();
+        for (Lifecycle lifecycle : lifeCycles.values()) {
+            if (lifecycle instanceof Releaser) {
+                ((Releaser) lifecycle).release();
+            }
+        }
     }
 
 }

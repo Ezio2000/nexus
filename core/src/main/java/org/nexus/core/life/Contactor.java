@@ -11,6 +11,8 @@ public interface Contactor {
 
     void start();
 
+    void shutdown();
+
     boolean probe();
 
 }

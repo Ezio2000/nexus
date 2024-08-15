@@ -30,13 +30,14 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
             Object handledResp = null;
             try {
                 // TODO: 2024/3/9
-                handledResp = this.respHandler.handle(resp);
+                handledResp = respHandler.handle(resp);
             } catch (Throwable t) {
                 log.error("", t);
+                // todo 异常处理要改finish(ex)，server同理
                 throw new RuntimeException(t);
             } finally {
                 String trace = resp.headers().get("trace");
-                this.futureManager.finish(trace, handledResp);
+                futureManager.finish(trace, handledResp);
                 resp.release();
                 ctx.close();
             }

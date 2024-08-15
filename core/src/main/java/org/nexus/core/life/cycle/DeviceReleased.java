@@ -2,6 +2,7 @@ package org.nexus.core.life.cycle;
 
 import org.nexus.core.life.DeviceLifecycle;
 import org.nexus.core.life.DeviceLifecycleContext;
+import org.nexus.core.life.resour.Releaser;
 
 
 /**
@@ -9,15 +10,15 @@ import org.nexus.core.life.DeviceLifecycleContext;
  * @date 2024/8/13 13:41
  * @description
  */
-public class DeviceDestroyed extends DeviceLifecycle {
+public class DeviceReleased extends DeviceLifecycle implements Releaser {
 
-    public DeviceDestroyed(DeviceLifecycleContext context) {
+    public DeviceReleased(DeviceLifecycleContext context) {
         super(context);
     }
 
     @Override
-    public void destroy0() {
-        System.out.println("已销毁");
+    public void release() {
+        System.out.println("释放资源！");
     }
 
 }

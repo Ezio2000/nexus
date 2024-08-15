@@ -15,9 +15,11 @@ public class NexusException extends Exception implements Disposal {
         super(msg);
     }
 
-    public NexusException(String msg, Throwable cause) {
-        super(msg, cause);
+    public NexusException(String msg, Throwable t) {
+        super(msg, t);
     }
+
+    public NexusException() {}
 
     @Override
     public void dispose() {

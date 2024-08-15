@@ -15,8 +15,12 @@ import org.nexus.core.life.LifecycleEnum;
 @Slf4j
 public class DeviceInitial extends DeviceLifecycle {
 
+    /* 代替父类中的context */
+    protected DeviceLifecycleContext context;
+
     public DeviceInitial(DeviceLifecycleContext context) {
         super(context);
+        this.context = context;
     }
 
     @Override

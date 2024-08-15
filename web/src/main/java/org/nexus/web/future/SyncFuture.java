@@ -16,8 +16,6 @@ import java.util.concurrent.CountDownLatch;
 @EqualsAndHashCode(callSuper = true)
 public class SyncFuture<T> extends Future<T> {
 
-    private CountDownLatch latch = new CountDownLatch(1);
-
     @Override
     public void await() throws InterruptedException {
         this.latch.await();

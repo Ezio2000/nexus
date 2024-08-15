@@ -10,24 +10,25 @@ import org.nexus.core.life.cycle.*;
 @Slf4j
 public class DeviceLifeCycleTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         DeviceLifecycleContext context = getDeviceLifeCycleContext();
 
-        System.out.println(context.getCur());
+//        System.out.println(context.getCur());
         context.getCur().bootstrap();
-        System.out.println(context.getCur());
+//        System.out.println(context.getCur());
         context.getCur().connect();
-        System.out.println(context.getCur());
-        context.getCur().active();
-        System.out.println(context.getCur());
-        context.getCur().disconnect();
-        System.out.println(context.getCur());
-        context.getCur().connect();
-        System.out.println(context.getCur());
-        context.getCur().active();
-        System.out.println(context.getCur());
-        context.getCur().destroy();
-        System.out.println(context.getCur());
+//        System.out.println(context.getCur());
+//        Thread.sleep(2000);
+//        context.getCur().active();
+//        System.out.println(context.getCur());
+//        context.getCur().disconnect();
+//        System.out.println(context.getCur());
+//        context.getCur().connect();
+//        System.out.println(context.getCur());
+//        context.getCur().active();
+//        System.out.println(context.getCur());
+//        context.getCur().destroy();
+//        System.out.println(context.getCur());
     }
 
     private static DeviceLifecycleContext getDeviceLifeCycleContext() {
@@ -38,6 +39,8 @@ public class DeviceLifeCycleTest {
             @Override
             public void start() {}
             @Override
+            public void shutdown() {}
+            @Override
             public boolean probe() {
                 log.info("探针激活");
                 return true;
@@ -45,13 +48,6 @@ public class DeviceLifeCycleTest {
         });
         context.addRepo("host", "nexus.com");
         context.addRepo("port", 123);
-
-        context.setInitial(new DeviceInitial(context));
-        context.setPreConnected(new DevicePreConnect(context));
-        context.setActive(new DeviceActive(context));
-        context.setWaited(new DeviceWaited(context));
-        context.setDestroyed(new DeviceDestroyed(context));
-        context.setCur(context.getInitial());
         return context;
     }
 

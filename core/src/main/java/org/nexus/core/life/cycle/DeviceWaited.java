@@ -2,6 +2,7 @@ package org.nexus.core.life.cycle;
 
 import org.nexus.core.life.DeviceLifecycle;
 import org.nexus.core.life.DeviceLifecycleContext;
+import org.nexus.core.life.LifecycleEnum;
 
 
 /**
@@ -17,12 +18,7 @@ public class DeviceWaited extends DeviceLifecycle {
 
     @Override
     public void connect0() {
-        System.out.println("重连");
-    }
-
-    @Override
-    public void destroy0() {
-        System.out.println("销毁");
+        context.setState(LifecycleEnum.STATE.ACTIVE);
     }
 
 }

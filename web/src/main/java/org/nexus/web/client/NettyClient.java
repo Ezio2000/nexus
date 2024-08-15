@@ -65,12 +65,17 @@ public class NettyClient {
         this.request(path, header, reqBody, future.getTrace());
     }
 
-    public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
+    public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException, Throwable {
         // todo 检查reqBody是否为resp的类型？或者页不需要？
         Future<T> future = this.futureManager.create(SyncFuture.class);
         this.request(path, header, reqBody, future.getTrace());
         future.await();
-        return future.getResp();
+        // todo 判断这个resp是否为ex
+        if (!future.isThrowable()) {
+            return future.getResp();
+        } else {
+            throw (Throwable) future.getResp();
+        }
     }
 
     private void request(String path, HttpHeaders header, Object reqBody, String trace) throws InterruptedException {

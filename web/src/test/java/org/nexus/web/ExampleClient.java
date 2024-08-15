@@ -30,10 +30,15 @@ public class ExampleClient {
         /* 发送请求 */
         ExampleWebProtocolProxy.ExampleReq req = new ExampleWebProtocolProxy.ExampleReq();
         req.reqCode = 1;
-        req.str = "我讨厌慧芳";
+        req.str = "我讨厌你";
         nettyClient.async("/example", null, req);
         nettyClient.async("/error", null, req);
-        ExampleWebProtocolProxy.ExampleResp resp = nettyClient.sync("/example", null, req);
+        ExampleWebProtocolProxy.ExampleResp resp = null;
+        try {
+            resp = nettyClient.sync("/example", null, req);
+        } catch (Throwable t) {
+            System.out.println(t.getMessage());
+        }
         System.out.println(resp.respCode);
         System.out.println(resp.str);
         System.out.println(resp.lists);

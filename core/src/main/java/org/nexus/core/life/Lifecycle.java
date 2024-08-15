@@ -11,8 +11,6 @@ public interface Lifecycle {
 
     void connect();
 
-    void active();
-
     void disconnect();
 
     void destroy();

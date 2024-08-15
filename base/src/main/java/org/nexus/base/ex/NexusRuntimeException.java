@@ -15,8 +15,8 @@ public class NexusRuntimeException extends RuntimeException implements Disposal 
         super(msg);
     }
 
-    public NexusRuntimeException(String msg, Throwable cause) {
-        super(msg, cause);
+    public NexusRuntimeException(String msg, Throwable t) {
+        super(msg, t);
     }
 
     @Override

@@ -18,16 +18,21 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class DevicePreConnect extends DeviceLifecycle {
 
+    protected DeviceLifecycleContext context;
+
     public DevicePreConnect(DeviceLifecycleContext context) {
         super(context);
+        this.context = context;
     }
 
     @Override
     public void connect0() throws LifecycleException {
+        context.getContactor().start();
         CountDownLatch latch = new CountDownLatch(1);
         Runnable runnable = () -> {
             context.getContactStatus().set(context.getContactor().probe());
-            log.debug("Contact status: {}", context.getContactStatus());
+            log.debug("Contactor probe: {}", context.getContactStatus());
+            latch.countDown();
         };
         context.getProbeExecutor().scheduleAtFixedRate(runnable, 0, 1, TimeUnit.SECONDS);
         try {
@@ -39,7 +44,7 @@ public class DevicePreConnect extends DeviceLifecycle {
             context.setState(LifecycleEnum.STATE.ACTIVE);
         } else {
             // todo 改成host/port的提示
-            log.error("{}未连接成功", context.getContactor());
+            log.error("[{}] connect fail.", context.getContactor());
             throw new LifecycleException(LifecycleEnum.STATE.DESTROYED);
         }
     }
