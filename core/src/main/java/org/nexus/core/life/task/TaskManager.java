@@ -2,6 +2,7 @@ package org.nexus.core.life.task;
 
 import org.nexus.base.factory.SingletonFactory;
 import org.nexus.core.life.ex.TaskWorkException;
+import org.nexus.core.life.resour.Releaser;
 import org.nexus.web.future.FutureManager;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.concurrent.*;
  * @date 2024/8/15 10:02
  * @description
  */
-public class TaskManager {
+public class TaskManager implements Releaser {
 
     private final List<Task> tasks = new Vector<>();
 
@@ -57,11 +58,20 @@ public class TaskManager {
         }
     }
 
+    // todo 怎么写业务逻辑？
+    // todo 在更外面可以new task() 然后 task.await()上锁
     private void work(Task task) throws TaskWorkException {
         // 业务逻辑
-        Object resp = "1";
+        Object resp = task.doTask();
         // 完成future
-        futureManager.finish(task.future.getTrace(), resp);
+        futureManager.finish(task.future, resp);
+    }
+
+    @Override
+    public void release() {
+        bossExecutor.shutdown();
+        workerExecutor.shutdown();
+        tasks.clear();
     }
 
 }

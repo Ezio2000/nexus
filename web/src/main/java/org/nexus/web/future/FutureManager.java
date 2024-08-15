@@ -30,4 +30,10 @@ public class FutureManager extends HashMap<String, Future> {
         return future;
     }
 
+    public <T> Future<T> finish(Future future, T resp) {
+        future.finish(resp);
+        super.remove(future.trace);
+        return future;
+    }
+
 }

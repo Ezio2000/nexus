@@ -1,7 +1,6 @@
 package org.nexus.core.life.resour;
 
 import org.nexus.core.life.task.Task;
-import org.nexus.core.life.task.TaskManager;
 
 /**
  * @author Xieningjun
@@ -9,8 +8,6 @@ import org.nexus.core.life.task.TaskManager;
  * @description
  */
 public interface Activity {
-
-    TaskManager listen();
 
     void accept(Task task);
 

@@ -1,9 +1,9 @@
 package org.nexus.core.life.task;
 
 import lombok.Data;
+import org.nexus.core.life.ex.TaskWorkException;
 import org.nexus.web.future.Future;
-
-import java.util.Vector;
+import org.nexus.web.future.SyncFuture;
 
 /**
  * @author Xieningjun
@@ -14,5 +14,21 @@ import java.util.Vector;
 public abstract class Task {
 
      protected final Future<?> future;
+
+     public Task(Future<?> future) {
+          this.future = future;
+     }
+
+     public Task() {
+          this.future = new SyncFuture<>();
+     }
+
+     public void await() throws InterruptedException {
+          if (!future.isWaited()) {
+               future.await();
+          }
+     }
+
+     abstract Object doTask() throws TaskWorkException;
 
 }
