@@ -38,7 +38,7 @@ public class DeviceLifecycleContext implements LifecycleContext {
     protected Lifecycle cur = initial;
 
     // todo 要有refresh方法，因为会换
-    protected Map<LifecycleEnum.STATE, Lifecycle> lifeCycles = new HashMap<>() {
+    protected Map<LifecycleEnum.STATE, Lifecycle> lifecycles = new HashMap<>() {
         { put(LifecycleEnum.STATE.INITIAL, initial); }
         { put(LifecycleEnum.STATE.PRE_CONNECTED, preConnected); }
         { put(LifecycleEnum.STATE.ACTIVE, active); }
@@ -59,7 +59,7 @@ public class DeviceLifecycleContext implements LifecycleContext {
 
     @Override
     public void renewCur() {
-        cur = lifeCycles.get(state);
+        cur = lifecycles.get(state);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class DeviceLifecycleContext implements LifecycleContext {
     public void release() {
         contactor.shutdown();
         probeExecutor.shutdown();
-        for (Lifecycle lifecycle : lifeCycles.values()) {
+        for (Lifecycle lifecycle : lifecycles.values()) {
             if (lifecycle instanceof Releaser) {
                 ((Releaser) lifecycle).release();
             }

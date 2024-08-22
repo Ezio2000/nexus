@@ -42,7 +42,7 @@ public class NettyClient {
     }
 
     public void start() {
-        this.bootstrap.group(this.group)
+        bootstrap.group(group)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -56,19 +56,19 @@ public class NettyClient {
     }
 
     public void shutdown() {
-        this.group.shutdownGracefully();
+        group.shutdownGracefully();
     }
 
     public <T> void async(String path, HttpHeaders header, Object reqBody) throws InterruptedException {
         // todo 检查reqBody是否为resp的类型？或者页不需要？
-        Future<T> future = this.futureManager.create(AsyncFuture.class);
-        this.request(path, header, reqBody, future.getTrace());
+        Future<T> future = futureManager.create(AsyncFuture.class);
+        request(path, header, reqBody, future.getTrace());
     }
 
     public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException, Throwable {
         // todo 检查reqBody是否为resp的类型？或者页不需要？
-        Future<T> future = this.futureManager.create(SyncFuture.class);
-        this.request(path, header, reqBody, future.getTrace());
+        Future<T> future = futureManager.create(SyncFuture.class);
+        request(path, header, reqBody, future.getTrace());
         future.await();
         // todo 判断这个resp是否为ex
         if (!future.isThrowable()) {
@@ -80,9 +80,9 @@ public class NettyClient {
 
     private void request(String path, HttpHeaders header, Object reqBody, String trace) throws InterruptedException {
         // 加请求参数校验，加在哪比较好？
-        ChannelFuture future = this.bootstrap.connect(this.host, this.port).sync();
+        ChannelFuture future = bootstrap.connect(host, port).sync();
         DefaultFullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, path);
-        req.headers().set(HttpHeaderNames.HOST, this.host);
+        req.headers().set(HttpHeaderNames.HOST, host);
         req.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         req.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
         req.headers().set("trace", trace);

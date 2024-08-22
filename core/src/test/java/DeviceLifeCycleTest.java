@@ -10,7 +10,7 @@ import org.nexus.core.life.cycle.*;
 @Slf4j
 public class DeviceLifeCycleTest {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         DeviceLifecycleContext context = getDeviceLifeCycleContext();
 
 //        System.out.println(context.getCur());

@@ -1,8 +1,10 @@
 package org.nexus.core.life.task;
 
 import lombok.Data;
+import org.nexus.base.factory.SingletonFactory;
 import org.nexus.core.life.ex.TaskWorkException;
 import org.nexus.web.future.Future;
+import org.nexus.web.future.FutureManager;
 import org.nexus.web.future.SyncFuture;
 
 /**
@@ -15,12 +17,16 @@ public abstract class Task {
 
      protected final Future<?> future;
 
+     private final FutureManager futureManager = SingletonFactory.factory().generate(
+             FutureManager.class, FutureManager::new
+     );
+
      public Task(Future<?> future) {
           this.future = future;
      }
 
      public Task() {
-          this.future = new SyncFuture<>();
+          future = futureManager.create(SyncFuture.class);
      }
 
      public void await() throws InterruptedException {
@@ -29,6 +35,6 @@ public abstract class Task {
           }
      }
 
-     abstract Object doTask() throws TaskWorkException;
+     protected abstract Object doTask() throws TaskWorkException;
 
 }

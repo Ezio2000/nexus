@@ -29,7 +29,7 @@ public class TaskManager implements Releaser {
     protected ExecutorService workerExecutor = Executors.newFixedThreadPool(10);
 
     public TaskManager() {
-        bossExecutor.scheduleAtFixedRate(this::manage, 0, 0, TimeUnit.MILLISECONDS);
+        bossExecutor.scheduleAtFixedRate(this::manage, 0, 5, TimeUnit.MILLISECONDS);
     }
 
     public void accept(Task task) {
@@ -49,11 +49,12 @@ public class TaskManager implements Releaser {
                         work(task);
                     } catch (TaskWorkException e) {
                         futureManager.finish(task.future.getTrace(), e);
+                    } finally {
+                        if (task.future.isFinished()) {
+                            tasks.remove(task);
+                        }
                     }
                 });
-            }
-            if (task.future.isFinished()) {
-                tasks.remove(task);
             }
         }
     }
