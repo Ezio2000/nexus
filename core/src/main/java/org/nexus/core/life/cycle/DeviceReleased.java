@@ -1,5 +1,6 @@
 package org.nexus.core.life.cycle;
 
+import lombok.extern.slf4j.Slf4j;
 import org.nexus.core.life.DeviceLifecycle;
 import org.nexus.core.life.DeviceLifecycleContext;
 import org.nexus.core.life.resour.Releaser;
@@ -10,6 +11,7 @@ import org.nexus.core.life.resour.Releaser;
  * @date 2024/8/13 13:41
  * @description
  */
+@Slf4j
 public class DeviceReleased extends DeviceLifecycle implements Releaser {
 
     public DeviceReleased(DeviceLifecycleContext context) {
@@ -18,7 +20,7 @@ public class DeviceReleased extends DeviceLifecycle implements Releaser {
 
     @Override
     public void release() {
-        System.out.println("释放资源！");
+        log.info("Device released.");
     }
 
 }

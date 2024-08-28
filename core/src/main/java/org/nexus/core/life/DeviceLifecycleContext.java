@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.nexus.core.life.cycle.*;
 import org.nexus.core.life.resour.Releaser;
+import org.nexus.web.client.Contactor;
 
 import java.util.HashMap;
 import java.util.Map;

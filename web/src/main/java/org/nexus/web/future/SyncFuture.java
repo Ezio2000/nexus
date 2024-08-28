@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * @author Xieningjun
  * @date 2024/3/6 10:28
@@ -15,6 +13,8 @@ import java.util.concurrent.CountDownLatch;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SyncFuture<T> extends Future<T> {
+
+    SyncFuture() {}
 
     @Override
     public void await() throws InterruptedException {

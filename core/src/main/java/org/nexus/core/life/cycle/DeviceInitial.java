@@ -1,7 +1,7 @@
 package org.nexus.core.life.cycle;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nexus.core.life.Contactor;
+import org.nexus.web.client.Contactor;
 import org.nexus.core.life.DeviceLifecycle;
 import org.nexus.core.life.DeviceLifecycleContext;
 import org.nexus.core.life.LifecycleEnum;

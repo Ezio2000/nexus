@@ -16,7 +16,7 @@ import org.nexus.core.life.task.TaskManager;
  */
 public class DeviceActive extends DeviceLifecycle implements Activity, Releaser {
 
-    private DeviceLifecycleContext context;
+    protected DeviceLifecycleContext context;
 
     private final TaskManager taskManager = new TaskManager();
 

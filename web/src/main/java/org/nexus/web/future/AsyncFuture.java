@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 public class AsyncFuture<T> extends Future<T> {
 
+    AsyncFuture() {}
+
     @Override
     public void await() {
     }

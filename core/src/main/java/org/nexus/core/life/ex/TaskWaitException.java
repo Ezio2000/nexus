@@ -8,8 +8,8 @@ import org.nexus.base.ex.NexusException;
  * @description
  */
 // todo 完善
-public class TaskWorkException extends NexusException {
+public class TaskWaitException extends NexusException {
 
-    public TaskWorkException(Throwable cause) {}
+    public TaskWaitException() {}
 
 }

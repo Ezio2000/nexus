@@ -37,8 +37,8 @@ public class NettyClient {
     public NettyClient(String host, int port) {
         this.host = host;
         this.port = port;
-        this.group = new NioEventLoopGroup();
-        this.bootstrap = new Bootstrap();
+        group = new NioEventLoopGroup();
+        bootstrap = new Bootstrap();
     }
 
     public void start() {
@@ -65,7 +65,7 @@ public class NettyClient {
         request(path, header, reqBody, future.getTrace());
     }
 
-    public <T> T sync(String path, HttpHeaders header, Object reqBody) throws InterruptedException, Throwable {
+    public <T> T sync(String path, HttpHeaders header, Object reqBody) throws Throwable {
         // todo 检查reqBody是否为resp的类型？或者页不需要？
         Future<T> future = futureManager.create(SyncFuture.class);
         request(path, header, reqBody, future.getTrace());

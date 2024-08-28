@@ -1,18 +1,19 @@
 package org.nexus.core.device;
 
-import org.nexus.core.life.Contactor;
+import lombok.extern.slf4j.Slf4j;
+import org.nexus.web.client.Contactor;
 import org.nexus.core.life.DeviceLifecycleContext;
 import org.nexus.core.life.Lifecycle;
 import org.nexus.core.life.LifecycleEnum;
 import org.nexus.core.life.resour.Activity;
 import org.nexus.core.life.task.Task;
-import org.nexus.core.life.task.TaskManager;
 
 /**
  * @author Xieningjun
  * @date 2024/7/10 13:37
  * @description
  */
+@Slf4j
 public class Device implements Lifecycle {
 
     protected String host;
@@ -49,9 +50,13 @@ public class Device implements Lifecycle {
         context.getCur().destroy();
     }
 
-    public void accept(Task task) {
+    public boolean accept(Task task) {
         if (context.getState() == LifecycleEnum.STATE.ACTIVE) {
             ((Activity) context.getCur()).accept(task);
+            return true;
+        } else {
+            log.warn("Device is not active.");
+            return false;
         }
     }
 

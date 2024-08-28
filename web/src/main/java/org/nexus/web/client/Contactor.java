@@ -1,4 +1,6 @@
-package org.nexus.core.life;
+package org.nexus.web.client;
+
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * @author Xieningjun
@@ -14,5 +16,7 @@ public interface Contactor {
     void shutdown();
 
     boolean probe();
+
+    Object command(String path, HttpHeaders header, Object reqBody) throws Throwable;
 
 }

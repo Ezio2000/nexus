@@ -2,6 +2,7 @@ package org.nexus.web.future;
 
 import lombok.Data;
 
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -13,7 +14,7 @@ import java.util.concurrent.CountDownLatch;
 @Data
 public abstract class Future<T> {
 
-    protected String trace = String.valueOf(System.currentTimeMillis());
+    protected String trace = UUID.randomUUID().toString();
 
     protected T resp;
 
@@ -22,8 +23,8 @@ public abstract class Future<T> {
     public abstract void await() throws InterruptedException;
 
     public abstract void finish(T resp);
-    
-    public boolean isWaited() {
+
+    public boolean isStarted() {
         return latch.getCount() == 0;
     }
 
