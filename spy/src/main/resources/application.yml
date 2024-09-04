@@ -1,9 +1,5 @@
 server:
-  port: 8007
-
-spring:
-  profiles:
-    include: mysql
+  port: 8008
 
 management:
   endpoints:
