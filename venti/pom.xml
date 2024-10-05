@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.nexus</groupId>
-    <artifactId>spy</artifactId>
+    <artifactId>venti</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -11,7 +11,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.source>21</maven.compiler.source>
-        <docker.image.prefix>spy</docker.image.prefix>
+        <docker.image.prefix>venti</docker.image.prefix>
+        <start-class>venti</start-class>
     </properties>
 
     <dependencies>

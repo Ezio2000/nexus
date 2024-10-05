@@ -4,45 +4,73 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import org.nexus.virtual.IOTest;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Duration;
-import java.util.Random;
+import javax.annotation.PostConstruct;
 
 /**
  * @author Xieningjun
  */
 @RestController
+@RequestMapping("/io")
 public class MetricsController {
 
-    private Random rand = new Random();
+    public PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-    PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-
-    @RequestMapping("/metrics")
-    public void metrics() {
+    @PostConstruct
+    public void init() {
         Metrics.addRegistry(prometheusRegistry);
+    }
 
-        Timer timer = Timer.builder("nexus.timer")
+    public void metrics(String metricsKey, Runnable runnable) {
+        Metrics.addRegistry(prometheusRegistry);
+        Timer timer = Timer.builder(metricsKey)
                 .publishPercentileHistogram(false)
-                .publishPercentiles(0.9, 0.99)
-                .maximumExpectedValue(Duration.ofSeconds(2))
-                .distributionStatisticBufferLength(1)
+                .publishPercentiles()
+//                .maximumExpectedValue(Duration.ofSeconds(2))
+//                .distributionStatisticBufferLength(1)
 //                .sla(Duration.ofMillis(50), Duration.ofMillis(100), Duration.ofMillis(200), Duration.ofMillis(500), Duration.ofSeconds(1))
                 .register(Metrics.globalRegistry);
-
         // 示例计时
-        timer.record(() -> {
-            try {
-                Thread.sleep(150); // 模拟任务
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        // 输出到标准输出以供 Prometheus 抓取
-        System.out.println(prometheusRegistry.scrape());
+        timer.record(runnable);
     }
+
+    @RequestMapping("/virtual")
+    public String ioVirtual(@RequestParam(value = "c") int concurrent, @RequestParam(value = "m") int mockTime) {
+        metrics("io.virtual." + concurrent + "." + mockTime, () -> {
+            IOTest.virtual(concurrent, mockTime);
+        });
+        return prometheusRegistry.scrape();
+    }
+
+    @RequestMapping("/plat")
+    public String ioPlat(@RequestParam(value = "c") int concurrent, @RequestParam(value = "m") int mockTime) {
+        metrics("io.plat." + concurrent + "." + mockTime, () -> {
+            IOTest.plat(Runtime.getRuntime().availableProcessors() * 2, concurrent, mockTime);
+        });
+        return prometheusRegistry.scrape();
+    }
+
+    @RequestMapping("/scrape")
+    public String ioScrape() {
+        return prometheusRegistry.scrape();
+    }
+
+    @RequestMapping("/gc")
+    public String ioGc() {
+        System.gc();
+        return prometheusRegistry.scrape();
+    }
+
+//    public static void main(String[] args) {
+//        MetricsController metricsController = new MetricsController();
+//        metricsController.ioVirtual();
+//        metricsController.ioPlat();
+//        // 输出到标准输出以供 Prometheus 抓取
+//        System.out.println(metricsController.prometheusRegistry.scrape());
+//    }
 
 }

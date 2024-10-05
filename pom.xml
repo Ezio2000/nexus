@@ -16,6 +16,7 @@
         <module>core</module>
         <module>spy</module>
         <module>socket</module>
+        <module>venti</module>
     </modules>
 
     <properties>
