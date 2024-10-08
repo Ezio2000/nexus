@@ -4,6 +4,7 @@ import org.nexus.subject.impl.SubjectFactory;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.time.Duration;
 
 /**
  * @author Xieningjun
@@ -15,8 +16,17 @@ public class HttpSubjectTest {
         var res = executor.sync(
                 SubjectFactory.ofHttpSubject()
                         .key("test")
-                        .client(HttpClient.newBuilder().build())
-                        .req(HttpRequest.newBuilder().uri(URI.create("http://localhost:8090/probe")).GET().build())
+                        .client(
+                                HttpClient.newBuilder()
+                                        .connectTimeout(Duration.ofMillis(2000))
+                                        .build()
+                        )
+                        .req(
+                                HttpRequest.newBuilder()
+                                        .uri(URI.create("http://localhost:8090/probe1"))
+                                        .GET()
+                                        .build()
+                        )
                         .build()
         );
         System.out.println(res.state);

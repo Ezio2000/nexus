@@ -11,7 +11,7 @@ public class AbsSubjectTest {
     public static void main(String[] args) throws InterruptedException {
         System.out.println(Thread.currentThread());
         var executor = new VirtualSubjectExecutor();
-        var latch = new CountDownLatch(1);
+        var latch = new CountDownLatch(3);
         var subject = new Subject() {
             @Override
             public String key() {
@@ -37,6 +37,8 @@ public class AbsSubjectTest {
                 latch.countDown();
             }
         };
+        executor.sync(subject);
+        executor.async(subject);
         executor.schedule(subject, 100, 1);
         latch.await();
     }
