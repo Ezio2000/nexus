@@ -36,6 +36,7 @@ public class LoopRunnable implements Runnable {
             outerCounter.incrementAndGet();
         } else {
             if (outerCounter.get() >= loop && loopFinished.compareAndSet(false, true)) {
+                // todo 这里是否应该Runtime？
                 throw new LoopException(loop, outerCounter.get());
             }
         }

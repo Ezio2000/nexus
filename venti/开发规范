@@ -1,2 +1,3 @@
 1、Exception简称e; Throwable简称t
-2、request简称req; response简称res; connect简称conn
+2、request简称req; response简称res; connect简称conn; httpClient简称client
+3、集合用xxList, xxMap

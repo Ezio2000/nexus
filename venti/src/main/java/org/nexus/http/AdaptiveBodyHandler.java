@@ -1,4 +1,4 @@
-package org.nexus.subject.impl.http;
+package org.nexus.http;
 
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -7,12 +7,6 @@ import java.nio.charset.StandardCharsets;
  * @author Xieningjun
  */
 public class AdaptiveBodyHandler implements HttpResponse.BodyHandler {
-
-    private AdaptiveBodyHandler() {}
-
-    public static HttpResponse.BodyHandler ofAdaptive() {
-        return new AdaptiveBodyHandler();
-    }
 
     @Override
     public HttpResponse.BodySubscriber apply(HttpResponse.ResponseInfo responseInfo) {
