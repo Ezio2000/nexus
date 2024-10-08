@@ -1,5 +1,8 @@
 package org.nexus.spy;
 
+import org.nexus.ex.LoopException;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -11,7 +14,11 @@ public class LoopRunnable implements Runnable {
 
     private final long loop;
 
-    private final AtomicLong counter = new AtomicLong(0);
+    private final AtomicLong innerCounter = new AtomicLong(0);
+
+    private final AtomicLong outerCounter = new AtomicLong(0);
+
+    private final AtomicBoolean loopFinished = new AtomicBoolean(false);
 
     private final Runnable delegate;
 
@@ -20,16 +27,18 @@ public class LoopRunnable implements Runnable {
         this.delegate = delegate;
     }
 
+    // todo 有没有风险？
     @Override
-    public void run() {
-        if (counter.get() < loop) {
-            counter.incrementAndGet();
+    public final void run() {
+        if (innerCounter.get() < loop) {
+            innerCounter.incrementAndGet();
             delegate.run();
+            outerCounter.incrementAndGet();
         } else {
-            throw new LoopException();
+            if (outerCounter.get() >= loop && loopFinished.compareAndSet(false, true)) {
+                throw new LoopException(loop, outerCounter.get());
+            }
         }
     }
-
-    public class LoopException extends RuntimeException {}
 
 }

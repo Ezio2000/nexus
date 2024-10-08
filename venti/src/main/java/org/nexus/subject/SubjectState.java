@@ -5,6 +5,6 @@ package org.nexus.subject;
  */
 public enum SubjectState {
 
-    NOT_STARTED, RUNNING, RESULT, ERROR
+    NOT_STARTED, RESULT, ERROR
 
 }

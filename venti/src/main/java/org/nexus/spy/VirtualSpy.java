@@ -3,6 +3,7 @@ package org.nexus.spy;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import org.nexus.ex.LoopException;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Xieningjun
  */
-public class Spy {
+public class VirtualSpy {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1 /* 改成初始化 */, Thread.ofVirtual().factory());
 
@@ -19,17 +20,18 @@ public class Spy {
 
     private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-    public Spy() {
+    public VirtualSpy() {
         scheduler.scheduleAtFixedRate(() -> {
             for (var entry : cancelMap.entrySet()) {
                 var future = entry.getKey();
                 var cancel = entry.getValue();
                 if (cancel.get()) {
+                    // todo true or false？
                     future.cancel(true);
                     cancelMap.remove(future);
                 }
             }
-        }, 0, 500, TimeUnit.MILLISECONDS);
+        }, 0, 100, TimeUnit.MILLISECONDS);
         Metrics.addRegistry(registry);
     }
 
@@ -46,11 +48,12 @@ public class Spy {
             Thread.ofVirtual().start(() -> {
                 try {
                     loopRunnable.run();
-                } catch (LoopRunnable.LoopException e) {
+                } catch (LoopException e) {
+                    System.out.println(Thread.currentThread() + ": loop - %s; actual - %s".formatted(e.loop, e.actual));
                     cancel.set(true);
                 }
             });
-        }, 0, period, TimeUnit.MILLISECONDS);
+        }, 0, period, TimeUnit.MILLISECONDS /* 也就是说 目前只支持到1000rps 如果要支持更高rps 需要改nano */);
         cancelMap.put(future, cancel);
         return future;
     }
@@ -77,7 +80,7 @@ public class Spy {
                 // todo
                 throw new RuntimeException(e);
             } catch (CancellationException ignored) {
-                /* 任务已取消 可以执行下一步了 */
+                /* 任务已取消 可以执行下一步 */
             } finally {
                 Thread.currentThread().interrupt();
             }

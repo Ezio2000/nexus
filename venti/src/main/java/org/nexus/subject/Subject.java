@@ -30,16 +30,14 @@ public abstract class Subject implements SubjectRunnable {
 
     @Override
     public final void run() {
-        if (!state.compareAndSet(SubjectState.RUNNING, SubjectState.RUNNING)) {
-            try {
-                result = run0();
-                state.set(SubjectState.RESULT);
-            } catch (Throwable e) {
-                t = e;
-                state.set(SubjectState.ERROR);
-            } finally {
-                counter.getAndIncrement();
-            }
+        try {
+            result = run0();
+            state.set(SubjectState.RESULT);
+        } catch (Throwable e) {
+            t = e;
+            state.set(SubjectState.ERROR);
+        } finally {
+            counter.getAndIncrement();
         }
     }
 
@@ -53,6 +51,7 @@ public abstract class Subject implements SubjectRunnable {
                 afterError(t);
                 break;
             default:
+                // loop且无状态的时候会不会导致卡死？（不执行？）
                 break;
         }
     }

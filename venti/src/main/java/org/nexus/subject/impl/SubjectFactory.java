@@ -1,6 +1,7 @@
 package org.nexus.subject.impl;
 
 import org.nexus.subject.Subject;
+import org.nexus.subject.impl.http.AdaptiveBodyHandler;
 import org.nexus.subject.impl.http.HttpSubject;
 
 import java.net.http.HttpClient;
@@ -20,7 +21,7 @@ public class SubjectFactory {
         private String key;
         private HttpClient client;
         private HttpRequest req;
-        private HttpResponse.BodyHandler<?> resHandler;
+        private HttpResponse.BodyHandler<?> resHandler = AdaptiveBodyHandler.ofAdaptive();
         public HttpSubjectBuilder key(String key) {
             this.key = key;
             return this;
