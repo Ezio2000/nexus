@@ -1,12 +1,10 @@
 package org.nexus.http;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * @author Xieningjun
@@ -30,6 +28,7 @@ public class GenericBodyHandler<T> implements HttpResponse.BodyHandler<T> {
     // 将 JSON 字符串转换为 T 类型对象
     private T convert(String body) {
         var gson = new Gson();
+        // todo 会有报格式转换错误
         return gson.fromJson(body, type);
     }
 

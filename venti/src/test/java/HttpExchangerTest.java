@@ -1,6 +1,7 @@
 import org.nexus.reflect.GenericType;
 import org.nexus.storage.HttpExchanger;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,20 +23,28 @@ public class HttpExchangerTest {
         public long l;
     }
 
-    public static void main(String[] args) {
-        var exchanger1 = new HttpExchanger<>(
-                new StringListType().getType(),
-                HttpClient.newBuilder().build(),
-                // 这里要try想想办法，类型不一致会抛异常
-                HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/stringList")).build()
-        );
+    public static void main(String[] args) throws IOException, InterruptedException {
+        var exchanger1 = new HttpExchanger<>(new StringListType().getType(), HttpClient.newBuilder().build()) {
+            @Override
+            public HttpRequest inflowReq() {
+                return HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/stringList")).build();
+            }
+            @Override
+            public HttpRequest outflowReq(Object o) {
+                return null;
+            }
+        };
         System.out.println(exchanger1.inflow());
-        var exchanger2 = new HttpExchanger<>(
-                new VentiObjType().getType(),
-                HttpClient.newBuilder().build(),
-                // 这里要try想想办法，类型不一致会抛异常，可以在new Gson那里捕获
-                HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/obj")).build()
-        );
+        var exchanger2 = new HttpExchanger<>(new VentiObjType().getType(), HttpClient.newBuilder().build()) {
+            @Override
+            public HttpRequest inflowReq() {
+                return HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/obj")).build();
+            }
+            @Override
+            public HttpRequest outflowReq(Object o) {
+                return null;
+            }
+        };
         System.out.println(exchanger2.inflow());
     }
 

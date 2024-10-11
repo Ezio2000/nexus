@@ -5,8 +5,8 @@ package org.nexus.storage;
  */
 public interface Exchanger<T> {
 
-    T inflow();
+    T inflow() throws Throwable;
 
-    void outflow(T t);
+    void outflow(T t) throws Throwable;
 
 }

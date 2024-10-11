@@ -1,7 +1,7 @@
 package org.nexus.storage;
 
+import com.google.gson.Gson;
 import org.nexus.http.GenericBodyHandler;
-import org.nexus.subject.Subject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -12,35 +12,34 @@ import java.net.http.HttpResponse;
 /**
  * @author Xieningjun
  */
-public class HttpExchanger<T> implements Exchanger<T> {
+public abstract class HttpExchanger<T> implements Exchanger<T> {
 
     // 要加状态
 
-    private Type type;
+    private final Type type;
 
-    private HttpClient client;
+    private final HttpClient client;
 
-    private HttpRequest req;
-
-    public HttpExchanger(Type type, HttpClient httpClient, HttpRequest req) {
+    public HttpExchanger(Type type, HttpClient httpClient) {
         this.type = type;
         this.client = httpClient;
-        this.req = req;
+    }
+
+    public abstract HttpRequest inflowReq();
+
+    public abstract HttpRequest outflowReq(T t);
+
+    @Override
+    public final T inflow() throws IOException, InterruptedException {
+        var inflowReq = inflowReq();
+        HttpResponse<T> res = client.send(inflowReq, new GenericBodyHandler<>(type));
+        return res.body();
     }
 
     @Override
-    public T inflow() {
-        try {
-            HttpResponse<T> res = client.send(req, new GenericBodyHandler<>(type));
-            return res.body();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void outflow(T t) {
-
+    public final void outflow(T t) throws IOException, InterruptedException {
+        var outflowReq = outflowReq(t);
+        client.send(outflowReq, HttpResponse.BodyHandlers.discarding());
     }
 
 }

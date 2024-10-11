@@ -2,7 +2,11 @@ package org.nexus.storage;
 
 import org.nexus.subject.Subject;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Xieningjun
@@ -10,18 +14,35 @@ import java.util.Map;
  */
 public class SubjectStore {
 
-    private Map<String, Subject> subjectMap;
+    private final Map<String, Subject> subjectMap = new ConcurrentHashMap<>();
 
-    private Exchanger<Subject> exchanger;
+    private final Exchanger<Collection<Subject>> exchanger;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1, Thread.ofVirtual().factory());
+
+    public SubjectStore(final Exchanger<Collection<Subject>> exchanger) {
+        this.exchanger = exchanger;
+    }
 
     public void inflow() {
-        var subject = exchanger.inflow();
-//        subjectMap.put(subject.key(), subject);
+        // todo 怎么把try-catch写得好看
+        try {
+            var subjects = exchanger.inflow();
+            for (var subject : subjects) {
+                subjectMap.putIfAbsent(subject.key(), subject);
+            }
+        } catch (Throwable t) {
+            // todo 完善
+            t.printStackTrace();
+        }
     }
 
     public void outflow() {
-        for (var subject : subjectMap.values()) {
-//            exchanger.outflow(subject);
+        try {
+            exchanger.outflow(subjectMap.values());
+        } catch (Throwable t) {
+            // todo 完善
+            t.printStackTrace();
         }
     }
 
