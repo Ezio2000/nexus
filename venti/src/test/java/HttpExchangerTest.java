@@ -24,24 +24,24 @@ public class HttpExchangerTest {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        var exchanger1 = new HttpExchanger<>(new StringListType().getType(), HttpClient.newBuilder().build()) {
+        var exchanger1 = new HttpExchanger<List<String>>(new StringListType().getType(), HttpClient.newBuilder().build()) {
             @Override
             public HttpRequest inflowReq() {
                 return HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/stringList")).build();
             }
             @Override
-            public HttpRequest outflowReq(Object o) {
+            public HttpRequest outflowReq(List<String> o) {
                 return null;
             }
         };
         System.out.println(exchanger1.inflow());
-        var exchanger2 = new HttpExchanger<>(new VentiObjType().getType(), HttpClient.newBuilder().build()) {
+        var exchanger2 = new HttpExchanger<VentiObj>(new VentiObjType().getType(), HttpClient.newBuilder().build()) {
             @Override
             public HttpRequest inflowReq() {
                 return HttpRequest.newBuilder().GET().uri(URI.create("http://localhost:8090/venti/obj")).build();
             }
             @Override
-            public HttpRequest outflowReq(Object o) {
+            public HttpRequest outflowReq(VentiObj o) {
                 return null;
             }
         };
