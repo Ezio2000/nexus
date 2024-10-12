@@ -1,4 +1,4 @@
-package org.nexus.spy;
+package org.nexus.vir;
 
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.prometheus.PrometheusConfig;
@@ -12,15 +12,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @author Xieningjun
  */
-public class VirtualSpy {
+public class Virtual {
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1 /* 改成初始化 */, Thread.ofVirtual().factory());
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1 /* 改成初始化 */, Thread.ofVirtual().factory());
 
-    private final Map<Future<?>, AtomicBoolean> cancelMap = new ConcurrentHashMap<>();
+    private static final Map<Future<?>, AtomicBoolean> cancelMap = new ConcurrentHashMap<>();
 
-    private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+    private static final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-    public VirtualSpy() {
+    static  {
         scheduler.scheduleAtFixedRate(() -> {
             for (var entry : cancelMap.entrySet()) {
                 var future = entry.getKey();
@@ -35,13 +35,12 @@ public class VirtualSpy {
         Metrics.addRegistry(registry);
     }
 
-    public Thread one(String key, Runnable runnable) {
-        return Thread.ofVirtual().start(new SpyRunnable(key, runnable));
+    public static Thread one(Runnable runnable) {
+        return Thread.ofVirtual().start(runnable);
     }
 
-    public Future<?> loop(Runnable runnable, String key, long loop, long period) {
-        var spyRunnable = new SpyRunnable(key, runnable);
-        var loopRunnable = new LoopRunnable(loop, spyRunnable);
+    public static Future<?> loop(Runnable runnable, long loop, long period) {
+        var loopRunnable = new LoopRunnable(runnable, loop);
         var cancel = new AtomicBoolean(false);
         // 让其在一个任务开始后，即可马上开始下一个任务
         var future = scheduler.scheduleAtFixedRate(() -> {
@@ -58,7 +57,7 @@ public class VirtualSpy {
         return future;
     }
 
-    public void hang(Thread thread, Runnable runnable) {
+    public static void hang(Thread thread, Runnable runnable) {
         Thread.ofVirtual().start(() -> {
             try {
                 thread.join();
@@ -72,7 +71,7 @@ public class VirtualSpy {
         });
     }
 
-    public void hang(Future<?> future, Runnable runnable) {
+    public static void hang(Future<?> future, Runnable runnable) {
         Thread.ofVirtual().start(() -> {
             try {
                 future.get();
@@ -88,7 +87,15 @@ public class VirtualSpy {
         });
     }
 
-    public String scrape() {
+    public static Thread spy(Runnable runnable, String key) {
+        return one(new SpyRunnable(runnable, key));
+    }
+
+    public static Future<?> spy(Runnable runnable, String key, long loop, long period) {
+        return loop(new SpyRunnable(runnable, key), loop, period);
+    }
+
+    public static String scrape() {
         return registry.scrape();
     }
 

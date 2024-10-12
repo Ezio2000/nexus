@@ -1,4 +1,4 @@
-package org.nexus.spy;
+package org.nexus.vir;
 
 import org.nexus.ex.LoopException;
 
@@ -22,9 +22,9 @@ public class LoopRunnable implements Runnable {
 
     private final Runnable delegate;
 
-    LoopRunnable(long loop, Runnable delegate) {
-        this.loop = loop;
+    LoopRunnable(Runnable delegate, long loop) {
         this.delegate = delegate;
+        this.loop = loop;
     }
 
     // todo 有没有风险？
